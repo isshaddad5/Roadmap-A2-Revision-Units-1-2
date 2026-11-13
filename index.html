@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap A2 Units 1-2 Interactive Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Scheherazade+New:wght@700&family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #3182ce;
+            --success: #38a169;
+            --error: #e53e3e;
+            --light: #f7fafc;
+            --border: #cbd5e0;
+            --chip-bg: #ebf8ff;
+            --chip-border: #90cdf4;
+            --gold: #ffd700;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #edf2f7;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), #2b6cb0);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        /* Subtle Islamic Geometric Pattern */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2.5px), radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2.5px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        h1 { margin: 0; font-size: 1.8rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); position: relative; z-index: 1; }
+        .user-name {
+            font-family: 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ffd700, #ff8c00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 140, 0, 0.4);
+            display: inline-block;
+            margin-top: 15px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        .score-board {
+            position: sticky;
+            top: 10px;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #live-score { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+        .section-nav button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin: 0 3px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .section-nav button:hover { background: #2b6cb0; transform: translateY(-2px); }
+        .btn-reset { background: var(--error); }
+        .btn-summary { background: var(--gold); color: #1a365d; }
+        
+        h2 { 
+            border-bottom: 3px solid var(--secondary); 
+            padding-bottom: 10px; 
+            margin-top: 40px; 
+            color: var(--primary); 
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .question-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--secondary);
+            transition: all 0.3s;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .question-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--primary);
+            flex-grow: 1;
+        }
+        .unit-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .options-container { display: flex; flex-direction: column; gap: 8px; }
+        .option-row {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-row:hover { background: #e2e8f0; border-color: var(--secondary); }
+        .option-row.correct { background: #f0fff4; border-color: var(--success); color: var(--success); font-weight: bold; pointer-events: none; }
+        .option-row.incorrect { background: #fff5f5; border-color: var(--error); color: var(--error); pointer-events: none; }
+        
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f7fafc;
+        }
+        .feedback.show { display: block; }
+        .correct-text { color: var(--success); }
+        .incorrect-text { color: var(--error); }
+        
+        .card-correct { border-left-color: var(--success) !important; background-color: #f0fff4 !important; }
+        .card-incorrect { border-left-color: var(--error) !important; background-color: #fff5f5 !important; }
+
+        /* Rearrangement Styles */
+        .rearrange-area { display: flex; flex-direction: column; gap: 15px; }
+        .word-bank, .target-bank {
+            min-height: 60px;
+            padding: 10px;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            background: #fafafa;
+        }
+        .target-bank { border-color: var(--secondary); background: #ebf8ff; min-height: 60px; }
+        .word-chip {
+            background: var(--chip-bg);
+            border: 1px solid var(--chip-border);
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .word-chip:hover { background: #bee3f8; transform: translateY(-2px); }
+        .word-chip.locked { pointer-events: none; opacity: 0.8; }
+        
+        .rearrange-controls { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-sm {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+        }
+        .btn-check { background: var(--success); }
+        .btn-clear { background: #718096; }
+        .btn-sm:hover { opacity: 0.9; }
+
+        .label-tag { font-size: 0.85rem; font-weight: bold; color: #4a5568; margin-bottom: 5px; display: block; }
+
+        #summarySection {
+            display: none;
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #summarySection h2 { border-bottom: none; background: none; box-shadow: none; color: var(--primary); margin-top: 0; }
+
+        @media (max-width: 600px) {
+            .score-board { flex-direction: column; gap: 10px; }
+            .section-nav button { display: block; width: 100%; margin: 5px 0; }
+            .question-header { flex-direction: column; align-items: flex-start; }
+            .unit-badge { margin-left: 0; margin-top: 5px; }
+            .user-name { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Roadmap A2 Units 1-2 Quiz</h1>
+    <div class="user-name">Mr. Islam Saber</div>
+    <p style="margin-top:10px; opacity:0.9; position: relative; z-index: 1;">50 Questions | Immediate Feedback & Interactive Ordering</p>
+</header>
+
+<div class="score-board">
+    <div id="live-score">Score: 0 / 50</div>
+    <div class="section-nav">
+        <button onclick="scrollToSection('vocab')">Vocab</button>
+        <button onclick="scrollToSection('grammar')">Grammar</button>
+        <button onclick="scrollToSection('rearrange')">Order</button>
+        <button class="btn-summary" onclick="showSummary()">Summary</button>
+        <button class="btn-reset" onclick="resetQuiz()">Reset</button>
+    </div>
+</div>
+
+<form id="quizForm">
+    <div id="vocab-section"></div>
+    <div id="grammar-section"></div>
+    <div id="rearrange-section"></div>
+</form>
+
+<div id="summarySection">
+    <h2>Quiz Summary</h2>
+    <p id="summaryText" style="font-size: 1.2rem; color: #4a5568;"></p>
+    <div id="summaryDetails" style="text-align: left; margin-top: 20px;"></div>
+</div>
+
+<script>
+    // --- DATA ---
+    const vocabQuestions = [
+        { q: "He is from Brazil. He is ______.", o: ["Brazilian", "Brasilean", "Brazilianese", "Brazil"], a: "Brazilian", unit: 1 },
+        { q: "She is from Japan. She is ______.", o: ["Japanian", "Japanese", "Japanish", "Japan"], a: "Japanese", unit: 1 },
+        { q: "It's raining outside. Don't forget your ______.", o: ["sunglasses", "skateboard", "umbrella", "laptop"], a: "umbrella", unit: 1 },
+        { q: "I play tennis with my ______.", o: ["tennis racket", "clock", "suitcase", "camera"], a: "tennis racket", unit: 1 },
+        { q: "I keep my money and credit cards in my ______.", o: ["handbag", "wallet", "purse", "notebook"], a: "wallet", unit: 1 },
+        { q: "I use my ______ to work on documents and send emails.", o: ["lamp", "laptop", "board games", "pictures"], a: "laptop", unit: 1 },
+        { q: "We need a ______ on the wall to see the time.", o: ["clock", "camera", "rings", "bike"], a: "clock", unit: 1 },
+        { q: "I wear ______ to protect my eyes from the bright sun.", o: ["earrings", "gloves", "sunglasses", "scarf"], a: "sunglasses", unit: 1 },
+        { q: "I pack my clothes in my ______ when I travel.", o: ["suitcase", "cap", "handbag", "driving licence"], a: "suitcase", unit: 1 },
+        { q: "I ride my ______ to the park with my friends.", o: ["bike", "skateboard", "laptop", "camera"], a: "bike", unit: 1 },
+        { q: "My father's father is my ______.", o: ["grandson", "grandfather", "uncle", "nephew"], a: "grandfather", unit: 2 },
+        { q: "I wear a ______ on my head in the summer.", o: ["scarf", "gloves", "cap", "sweater"], a: "cap", unit: 2 },
+        { q: "I use a ______ to brush my hair.", o: ["hairbrush", "make-up", "necklace", "purse"], a: "hairbrush", unit: 2 },
+        { q: "My phone is dead. I need a ______.", o: ["phone charger", "notebook", "driving licence", "wallet"], a: "phone charger", unit: 2 },
+        { q: "This box is very ______. I can't lift it!", o: ["light", "heavy", "soft", "round"], a: "heavy", unit: 2 },
+        { q: "I love my new sofa. It's very ______.", o: ["broken", "hard", "comfortable", "square"], a: "comfortable", unit: 2 },
+        { q: "My sister's daughter is my ______.", o: ["niece", "nephew", "cousin", "granddaughter"], a: "niece", unit: 2 },
+        { q: "I wear ______ on my ears.", o: ["necklace", "earrings", "rings", "bracelet"], a: "earrings", unit: 2 },
+        { q: "I put my lipstick and keys in my ______.", o: ["handbag", "sweater", "scarf", "gloves"], a: "handbag", unit: 2 },
+        { q: "This table is not round. It's ______.", o: ["square", "soft", "modern", "beautiful"], a: "square", unit: 2 }
+    ];
+
+    const grammarQuestions = [
+        { q: "______ you from Mexico?", o: ["Is", "Are", "Am", "Be"], a: "Are", unit: 1 },
+        { q: "______ is your favourite actor?", o: ["Where", "When", "Who", "How"], a: "Who", unit: 1 },
+        { q: "______ old is your brother?", o: ["What", "How", "Where", "When"], a: "How", unit: 1 },
+        { q: "Look at ______ shoes over there. They are beautiful.", o: ["this", "that", "these", "those"], a: "those", unit: 1 },
+        { q: "It's 7:45. It's a quarter ______ eight.", o: ["past", "to", "after", "before"], a: "to", unit: 1 },
+        { q: "A: What time ______ it? B: It's half past two.", o: ["is", "are", "am", "be"], a: "is", unit: 1 },
+        { q: "______ are you here? Because I have a class.", o: ["What", "Where", "Why", "When"], a: "Why", unit: 1 },
+        { q: "______ is your birthday? It's in November.", o: ["Who", "What", "When", "Where"], a: "When", unit: 1 },
+        { q: "These laptops are new. ______ laptops over there are old.", o: ["This", "That", "These", "Those"], a: "Those", unit: 1 },
+        { q: "A: Is this your pen? B: Yes, it ______.", o: ["is", "are", "am", "be"], a: "is", unit: 1 },
+        { q: "This is Sarah. ______ husband is called Tom.", o: ["She", "Her", "His", "Hers"], a: "Her", unit: 2 },
+        { q: "Is this ______ notebook?", o: ["you", "your", "yours", "you're"], a: "your", unit: 2 },
+        { q: "______ gloves are these? They are mine.", o: ["Who", "Whose", "Who's", "Whom"], a: "Whose", unit: 2 },
+        { q: "The car is theirs. It's ______.", o: ["their", "theirs", "them", "they"], a: "theirs", unit: 2 },
+        { q: "______ you got a pet?", o: ["Has", "Have", "Do", "Does"], a: "Have", unit: 2 },
+        { q: "She ______ got a large house.", o: ["have", "has", "is", "are"], a: "has", unit: 2 },
+        { q: "This isn't my bag. It's ______.", o: ["her", "hers", "she", "she's"], a: "hers", unit: 2 },
+        { q: "We ______ got a new car.", o: ["has", "have", "is", "are"], a: "have", unit: 2 },
+        { q: "That's John's bike. It's ______.", o: ["he", "him", "his", "he's"], a: "his", unit: 2 },
+        { q: "They ______ got any children.", o: ["hasn't", "haven't", "don't", "doesn't"], a: "haven't", unit: 2 }
+    ];
+
+    const rearrangeQuestions = [
+        { tokens: ["Where", "are", "you", "from", "?"], a: "Where are you from?", unit: 1 },
+        { tokens: ["What", "time", "is", "it", "?"], a: "What time is it?", unit: 1 },
+        { tokens: ["This", "is", "my", "brother's", "wife", "."], a: "This is my brother's wife.", unit: 2 },
+        { tokens: ["Have", "you", "got", "a", "bike", "?"], a: "Have you got a bike?", unit: 2 },
+        { tokens: ["Whose", "driving", "licence", "is", "this", "?"], a: "Whose driving licence is this?", unit: 2 },
+        { tokens: ["Those", "shoes", "are", "very", "expensive", "."], a: "Those shoes are very expensive.", unit: 1 },
+        { tokens: ["It's", "a", "quarter", "past", "eight", "."], a: "It's a quarter past eight.", unit: 1 },
+        { tokens: ["My", "mother's", "name", "is", "Maria", "."], a: "My mother's name is Maria.", unit: 2 },
+        { tokens: ["I", "haven't", "got", "any", "brothers", "."], a: "I haven't got any brothers.", unit: 2 },
+        { tokens: ["Is", "this", "your", "phone", "charger", "?"], a: "Is this your phone charger?", unit: 2 }
+    ];
+
+    // --- STATE ---
+    let currentScore = 0;
+    let totalQuestions = vocabQuestions.length + grammarQuestions.length + rearrangeQuestions.length;
+    let answeredQuestions = new Set();
+
+    function updateScore() {
+        document.getElementById('live-score').innerText = `Score: ${currentScore} / ${totalQuestions}`;
+    }
+
+    // --- RENDER MCQs ---
+    function renderMCQs(data, containerId, sectionPrefix) {
+        const container = document.getElementById(containerId);
+        data.forEach((item, index) => {
+            const qNum = index + 1;
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `${sectionPrefix}-q${qNum}`;
+            
+            let optionsHtml = '';
+            item.o.forEach((opt, i) => {
+                const optLabel = String.fromCharCode(97 + i);
+                optionsHtml += `
+                    <div class="option-row" data-value="${opt}" onclick="handleMCQClick(this, '${sectionPrefix}', ${qNum}, '${opt.replace(/'/g, "\\'")}', '${item.a.replace(/'/g, "\\'")}')">
+                        <span class="option-label">${optLabel}) ${opt}</span>
+                    </div>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="question-header">
+                    <div class="question-text">${qNum}. ${item.q}</div>
+                    <span class="unit-badge">Unit ${item.unit}</span>
+                </div>
+                <div class="options-container">${optionsHtml}</div>
+                <div class="feedback" id="${sectionPrefix}-fb${qNum}"></div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // --- RENDER REARRANGE ---
+    function renderRearrange(data, containerId) {
+        const container = document.getElementById(containerId);
+        data.forEach((item, index) => {
+            const qNum = index + 1;
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `rearrange-q${qNum}`;
+            
+            let shuffled = [...item.tokens].sort(() => Math.random() - 0.5);
+            
+            let jumbledHtml = '';
+            shuffled.forEach((token, i) => {
+                jumbledHtml += `<div class="word-chip" onclick="moveWord(this, 'target-${qNum}', 'jumbled-${qNum}')" data-index="${i}">${token}</div>`;
+            });
+
+            card.innerHTML = `
+                <div class="question-header">
+                    <div class="question-text">${qNum}. Click the words to build the sentence:</div>
+                    <span class="unit-badge">Unit ${item.unit}</span>
+                </div>
+                <div class="rearrange-area">
+                    <div>
+                        <span class="label-tag">Your Sentence:</span>
+                        <div class="target-bank" id="target-${qNum}"></div>
+                    </div>
+                    <div>
+                        <span class="label-tag">Word Bank:</span>
+                        <div class="word-bank" id="jumbled-${qNum}">${jumbledHtml}</div>
+                    </div>
+                    <div class="rearrange-controls">
+                        <button type="button" class="btn-sm btn-check" onclick="checkRearrange(${qNum}, '${item.a.replace(/'/g, "\\'")}')">Check</button>
+                        <button type="button" class="btn-sm btn-clear" onclick="resetRearrange(${qNum})">Reset</button>
+                    </div>
+                    <div class="feedback" id="rearrange-fb-${qNum}"></div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // --- INTERACTION LOGIC ---
+    function handleMCQClick(element, prefix, qNum, selected, correct) {
+        const uniqueId = `${prefix}-${qNum}`;
+        if (answeredQuestions.has(uniqueId)) return;
+
+        const card = document.getElementById(`${prefix}-q${qNum}`);
+        const feedback = document.getElementById(`${prefix}-fb${qNum}`);
+        const rows = card.querySelectorAll('.option-row');
+
+        answeredQuestions.add(uniqueId);
+
+        if (selected === correct) {
+            element.classList.add('correct');
+            feedback.innerHTML = `<span class="correct-text">✔ Correct!</span>`;
+            currentScore++;
+        } else {
+            element.classList.add('incorrect');
+            rows.forEach(row => {
+                if (row.dataset.value === correct) row.classList.add('correct');
+            });
+            feedback.innerHTML = `<span class="incorrect-text">✘ Incorrect. Answer: ${correct}</span>`;
+        }
+        feedback.classList.add('show');
+        rows.forEach(row => row.style.pointerEvents = 'none');
+        updateScore();
+    }
+
+    function moveWord(chip, targetId, sourceId) {
+        const target = document.getElementById(targetId);
+        const source = document.getElementById(sourceId);
+        if (chip.parentElement.id === sourceId) {
+            target.appendChild(chip);
+        } else {
+            source.appendChild(chip);
+        }
+    }
+
+    function checkRearrange(qNum, correctAnswer) {
+        const uniqueId = `rearrange-${qNum}`;
+        if (answeredQuestions.has(uniqueId)) return;
+
+        const target = document.getElementById(`target-${qNum}`);
+        const chips = target.querySelectorAll('.word-chip');
+        
+        if (chips.length === 0) {
+            alert("Please arrange the words first!");
+            return;
+        }
+
+        let userSentence = '';
+        chips.forEach((chip, index) => {
+            const word = chip.textContent;
+            if (word === '.' || word === '?' || word === '!' || word === ',') {
+                userSentence += word;
+            } else {
+                if (index > 0) userSentence += ' ';
+                userSentence += word;
+            }
+        });
+
+        let userNorm = userSentence.toLowerCase().replace(/\s+/g, ' ').trim();
+        let corrNorm = correctAnswer.toLowerCase().replace(/\s+/g, ' ').trim();
+
+        const feedback = document.getElementById(`rearrange-fb-${qNum}`);
+        const card = document.getElementById(`rearrange-q${qNum}`);
+
+        answeredQuestions.add(uniqueId);
+
+        if (userNorm === corrNorm) {
+            card.classList.add('card-correct');
+            feedback.innerHTML = `<span class="correct-text">✔ Correct!</span>`;
+            currentScore++;
+        } else {
+            card.classList.add('card-incorrect');
+            feedback.innerHTML = `<span class="incorrect-text">✘ Incorrect. Answer: ${correctAnswer}</span>`;
+        }
+        feedback.classList.add('show');
+
+        const allChips = document.querySelectorAll(`#jumbled-${qNum} .word-chip, #target-${qNum} .word-chip`);
+        allChips.forEach(c => c.classList.add('locked'));
+        updateScore();
+    }
+
+    function resetRearrange(qNum) {
+        if (answeredQuestions.has(`rearrange-${qNum}`)) return;
+        const target = document.getElementById(`target-${qNum}`);
+        const source = document.getElementById(`jumbled-${qNum}`);
+        const chips = target.querySelectorAll('.word-chip');
+        chips.forEach(c => source.appendChild(c));
+    }
+
+    function resetQuiz() {
+        if(!confirm("Are you sure you want to reset the entire quiz?")) return;
+        location.reload();
+    }
+
+    function scrollToSection(id) {
+        document.getElementById(id + '-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showSummary() {
+        const summarySection = document.getElementById('summarySection');
+        const summaryText = document.getElementById('summaryText');
+        const summaryDetails = document.getElementById('summaryDetails');
+        
+        const percentage = Math.round((currentScore / totalQuestions) * 100);
+        let message = "";
+        if (percentage >= 90) message = "Outstanding! 🌟 You have mastered these units.";
+        else if (percentage >= 75) message = "Excellent work! 💪 You have a very strong understanding.";
+        else if (percentage >= 50) message = "Good effort! 📚 Keep practicing to improve.";
+        else message = "Keep studying! 📖 Review the grammar and vocabulary boxes in your book.";
+
+        summaryText.innerHTML = `Dear <strong style="font-family: 'Amiri', serif; color: var(--gold); text-shadow: 0 0 5px var(--gold);">Mr. Islam Saber</strong>,<br><br>Your Final Score: <strong>${currentScore} / ${totalQuestions} (${percentage}%)</strong><br><br>${message}`;
+        
+        summaryDetails.innerHTML = `
+            <h3>Performance Breakdown:</h3>
+            <ul style="list-style-type: none; padding: 0;">
+                <li style="padding: 10px; background: #f7fafc; margin-bottom: 5px; border-radius: 5px;">📝 <strong>Vocabulary (Units 1-2):</strong> ${getSectionScore('vocab')} / ${vocabQuestions.length}</li>
+                <li style="padding: 10px; background: #f7fafc; margin-bottom: 5px; border-radius: 5px;">📐 <strong>Grammar (Units 1-2):</strong> ${getSectionScore('grammar')} / ${grammarQuestions.length}</li>
+                <li style="padding: 10px; background: #f7fafc; margin-bottom: 5px; border-radius: 5px;">🔤 <strong>Sentence Ordering:</strong> ${getSectionScore('rearrange')} / ${rearrangeQuestions.length}</li>
+            </ul>
+            <p style="margin-top: 20px; font-style: italic; color: #718096;">Summary generated on Saturday, November 14, 2026.</p>
+        `;
+        
+        summarySection.style.display = 'block';
+        summarySection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function getSectionScore(prefix) {
+        let score = 0;
+        let total = 0;
+        if (prefix === 'vocab') total = vocabQuestions.length;
+        if (prefix === 'grammar') total = grammarQuestions.length;
+        if (prefix === 'rearrange') total = rearrangeQuestions.length;
+        
+        for (let i = 1; i <= total; i++) {
+            if (answeredQuestions.has(`${prefix}-${i}`)) {
+                const card = document.getElementById(`${prefix}-q${i}`);
+                if (card.classList.contains('card-correct') || (prefix !== 'rearrange' && document.getElementById(`${prefix}-fb${i}`).innerHTML.includes('Correct!'))) {
+                    score++;
+                }
+            }
+        }
+        return score;
+    }
+
+    // --- INIT ---
+    renderMCQs(vocabQuestions, 'vocab-section', 'vocab');
+    renderMCQs(grammarQuestions, 'grammar-section', 'grammar');
+    renderRearrange(rearrangeQuestions, 'rearrange-section');
+    updateScore();
+</script>
+
+</body>
+</html>
